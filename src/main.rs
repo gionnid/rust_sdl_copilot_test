@@ -1,3 +1,5 @@
+mod fundational_graphic_lib;
+
 fn main() {
-    rust_sdl_copilot_test::run();
+    fundational_graphic_lib::run();
 }
