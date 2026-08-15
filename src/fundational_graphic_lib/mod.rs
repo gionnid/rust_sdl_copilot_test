@@ -27,24 +27,48 @@ pub fn run() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
     'running: loop {
-        for event in event_pump.poll_iter() {
-            match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => break 'running,
-                _ => {}
-            }
+        // 1. Input: process all pending SDL events. Add new key/mouse handling in handle_events().
+        if !handle_events(&mut event_pump) {
+            break 'running;
         }
-        draw_canvas(&mut canvas);
+
+        // 2. Logic: advance game/simulation state. Add new state updates in update().
+        update();
+
+        // 3. Output: draw the current state. Add new drawing calls in render().
+        render(&mut canvas);
+
         ::std::thread::sleep(Duration::from_millis(100));
     }
 }
 
-fn draw_canvas(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
+/// Processes all pending SDL events. Returns `false` when the app should quit.
+fn handle_events(event_pump: &mut sdl2::EventPump) -> bool {
+    for event in event_pump.poll_iter() {
+        match event {
+            Event::Quit { .. }
+            | Event::KeyDown {
+                keycode: Some(Keycode::Escape),
+                ..
+            } => return false,
+            _ => {}
+        }
+    }
+    true
+}
+
+/// Updates game/simulation state for the current frame.
+fn update() {
+    // Add per-frame logic (movement, physics, timers, etc.) here.
+}
+
+/// Draws the current frame to the canvas.
+fn render(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     canvas.set_draw_color(BACKGROUND_COLOR);
     canvas.clear();
+
+    // Add drawing calls here.
+
     canvas.present();
 }
 
